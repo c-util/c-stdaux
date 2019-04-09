@@ -27,12 +27,12 @@ static void test_api_macros(void) {
         /* _c_cleanup_ */
         {
                 _c_cleanup_(c_freep) void *foo = NULL;
-                assert(!foo);
+                c_assert(!foo);
         }
 
         /* _c_const_ */
         {
-                assert(!const_fn());
+                c_assert(!const_fn());
         }
 
         /* _c_deprecated_ */
@@ -42,12 +42,12 @@ static void test_api_macros(void) {
 
         /* _c_hidden_ */
         {
-                assert(!c_internal_hidden_fn());
+                c_assert(!c_internal_hidden_fn());
         }
 
         /* _c_likely_ */
         {
-                assert(_c_likely_(true));
+                c_assert(_c_likely_(true));
         }
 
         /* _c_packed_ */
@@ -56,70 +56,70 @@ static void test_api_macros(void) {
                         int member;
                 } foobar = {};
 
-                assert(!foobar.member);
+                c_assert(!foobar.member);
         }
 
         /* _c_printf_ */
         {
-                assert(!printf_fn("%d", 1));
+                c_assert(!printf_fn("%d", 1));
         }
 
         /* _c_public_ */
         {
-                assert(!c_internal_public_fn());
+                c_assert(!c_internal_public_fn());
         }
 
         /* _c_pure_ */
         {
-                assert(!pure_fn());
+                c_assert(!pure_fn());
         }
 
         /* _c_sentinel_ */
         {
-                assert(!sentinel_fn("", NULL));
+                c_assert(!sentinel_fn("", NULL));
         }
 
         /* _c_unlikely_ */
         {
-                assert(!_c_unlikely_(false));
+                c_assert(!_c_unlikely_(false));
         }
 
         /* _c_unused_ */
         {
-                assert(!unused_fn());
+                c_assert(!unused_fn());
         }
 
         /* C_EXPR_ASSERT */
         {
                 int v = C_EXPR_ASSERT(0, true, "");
 
-                assert(!v);
+                c_assert(!v);
         }
 
         /* C_STRINGIFY */
         {
                 const char v[] = C_STRINGIFY(foobar);
 
-                assert(!strcmp(v, "foobar"));
+                c_assert(!strcmp(v, "foobar"));
         }
 
         /* C_CONCATENATE */
         {
                 int C_CONCATENATE(a, b) = 0;
 
-                assert(!ab);
+                c_assert(!ab);
         }
 
         /* C_EXPAND */
         {
                 int x[] = { C_EXPAND((0, 1)) };
 
-                assert(sizeof(x) / sizeof(*x) == 2);
+                c_assert(sizeof(x) / sizeof(*x) == 2);
         }
 
         /* C_VAR */
         {
-                int C_VAR = 0; assert(!C_VAR); /* must be on the same line */
+                int C_VAR = 0; c_assert(!C_VAR); /* must be on the same line */
         }
 
         /* C_CC_MACRO1, C_CC_MACRO2, C_CC_MACRO3 */
@@ -128,9 +128,9 @@ static void test_api_macros(void) {
 #define MACRO1(_x1) C_CC_MACRO1(MACRO_REAL, _x1, 0, 0)
 #define MACRO2(_x1, _x2) C_CC_MACRO2(MACRO_REAL, _x1, _x2, 0)
 #define MACRO3(_x1, _x2, _x3) C_CC_MACRO3(MACRO_REAL, _x1, _x2, _x3)
-                assert(!MACRO1(1));
-                assert(!MACRO2(1, 1));
-                assert(!MACRO3(1, 1, 1));
+                c_assert(!MACRO1(1));
+                c_assert(!MACRO2(1, 1));
+                c_assert(!MACRO3(1, 1, 1));
 #undef MACRO3
 #undef MACRO2
 #undef MACRO1
@@ -139,12 +139,12 @@ static void test_api_macros(void) {
         /* C_ARRAY_SIZE */
         {
                 int v[] = { 0, 1, 2 };
-                assert(C_ARRAY_SIZE(v) == 3);
+                c_assert(C_ARRAY_SIZE(v) == 3);
         }
 
         /* C_DECIMAL_MAX */
         {
-                assert(C_DECIMAL_MAX(uint8_t) == 4);
+                c_assert(C_DECIMAL_MAX(uint8_t) == 4);
         }
 
         /* c_container_of */
@@ -153,16 +153,16 @@ static void test_api_macros(void) {
                         int member;
                 } v = {};
 
-                assert(c_container_of(&v.member, struct FooBarContainer, member) == &v);
+                c_assert(c_container_of(&v.member, struct FooBarContainer, member) == &v);
         }
 
         /* c_max, c_min, c_less_by, c_clamp, c_div_round_up */
         {
-                assert(c_max(0, 0) == 0);
-                assert(c_min(0, 0) == 0);
-                assert(c_less_by(0, 0) == 0);
-                assert(c_clamp(0, 0, 0) == 0);
-                assert(c_div_round_up(1, 1) == 1);
+                c_assert(c_max(0, 0) == 0);
+                c_assert(c_min(0, 0) == 0);
+                c_assert(c_less_by(0, 0) == 0);
+                c_assert(c_clamp(0, 0, 0) == 0);
+                c_assert(c_div_round_up(1, 1) == 1);
         }
 
         /* C_DEFINE_CLEANUP / C_DEFINE_DIRECT_CLEANUP */
@@ -190,7 +190,7 @@ static void test_api_functions(void) {
         size_t i;
 
         for (i = 0; i < sizeof(fns) / sizeof(*fns); ++i)
-                assert(!!fns[i]);
+                c_assert(!!fns[i]);
 }
 
 int main(int argc, char **argv) {

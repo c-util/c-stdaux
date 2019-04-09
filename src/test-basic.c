@@ -5,6 +5,7 @@
  * to do. More elaborate tests and/or stress-tests are not included here.
  */
 
+#undef NDEBUG
 #include <stdlib.h>
 #include <sys/eventfd.h>
 #include "c-stdaux.h"
@@ -22,7 +23,7 @@ static void test_misc(int non_constant_expr) {
         {
                 static int v = C_EXPR_ASSERT(1, true, "");
 
-                assert(v == 1);
+                c_assert(v == 1);
         }
 
         /*
@@ -32,11 +33,11 @@ static void test_misc(int non_constant_expr) {
          */
         {
 #define TEST_TOKEN foobar
-                assert(!strcmp("foobar", C_STRINGIFY(foobar)));
-                assert(!strcmp("foobar", C_STRINGIFY(TEST_TOKEN)));
-                assert(!strcmp("foobar", C_STRINGIFY(C_CONCATENATE(foo, bar))));
-                assert(!strcmp("foobarfoobar", C_STRINGIFY(C_CONCATENATE(TEST_TOKEN, foobar))));
-                assert(!strcmp("foobarfoobar", C_STRINGIFY(C_CONCATENATE(foobar, TEST_TOKEN))));
+                c_assert(!strcmp("foobar", C_STRINGIFY(foobar)));
+                c_assert(!strcmp("foobar", C_STRINGIFY(TEST_TOKEN)));
+                c_assert(!strcmp("foobar", C_STRINGIFY(C_CONCATENATE(foo, bar))));
+                c_assert(!strcmp("foobarfoobar", C_STRINGIFY(C_CONCATENATE(TEST_TOKEN, foobar))));
+                c_assert(!strcmp("foobarfoobar", C_STRINGIFY(C_CONCATENATE(foobar, TEST_TOKEN))));
 #undef TEST_TOKEN
         }
 
@@ -54,10 +55,10 @@ static void test_misc(int non_constant_expr) {
                  */
                 int (*f) (const char *, const char *) = strcmp;
 
-                assert(!f(C_EXPAND(()) "foobar", "foo" "bar"));
-                assert(!f(C_EXPAND(("foobar")), "foo" "bar"));
-                assert(!f(C_EXPAND(("foobar", "foo" "bar"))));
-                assert(!f C_EXPAND((("foobar", "foo" "bar"))));
+                c_assert(!f(C_EXPAND(()) "foobar", "foo" "bar"));
+                c_assert(!f(C_EXPAND(("foobar")), "foo" "bar"));
+                c_assert(!f(C_EXPAND(("foobar", "foo" "bar"))));
+                c_assert(!f C_EXPAND((("foobar", "foo" "bar"))));
         }
 
         /*
@@ -73,9 +74,9 @@ static void test_misc(int non_constant_expr) {
                         /* make sure the variable name does not clash */
                         int sub = 12, subUNIQUE = 12, UNIQUEsub = 12;
 
-                        assert(7 + C_VAR(sub, UNIQUE) == sub);
-                        assert(sub == subUNIQUE);
-                        assert(sub == UNIQUEsub);
+                        c_assert(7 + C_VAR(sub, UNIQUE) == sub);
+                        c_assert(sub == subUNIQUE);
+                        c_assert(sub == UNIQUEsub);
                 }
                 {
                         /*
@@ -86,11 +87,11 @@ static void test_misc(int non_constant_expr) {
                 }
                 {
                         /* verify C_VAR() with single argument works line-based */
-                        int C_VAR(sub); C_VAR(sub) = 5; assert(C_VAR(sub) == 5);
+                        int C_VAR(sub); C_VAR(sub) = 5; c_assert(C_VAR(sub) == 5);
                 }
                 {
                         /* verify C_VAR() with no argument works line-based */
-                        int C_VAR(); C_VAR() = 5; assert(C_VAR() == 5);
+                        int C_VAR(); C_VAR() = 5; c_assert(C_VAR() == 5);
                 }
         }
 
@@ -102,7 +103,7 @@ static void test_misc(int non_constant_expr) {
                 int bar[8];
 
                 static_assert(C_ARRAY_SIZE(bar) == 8, "");
-                assert(__builtin_constant_p(C_ARRAY_SIZE(bar)));
+                c_assert(__builtin_constant_p(C_ARRAY_SIZE(bar)));
         }
 
         /*
@@ -134,9 +135,9 @@ static void test_misc(int non_constant_expr) {
                         char b;
                 } sub = {};
 
-                assert(&sub == c_container_of(&sub.a, struct foobar, a));
-                assert(&sub == c_container_of(&sub.b, struct foobar, b));
-                assert(&sub == c_container_of((const char *)&sub.b, struct foobar, b));
+                c_assert(&sub == c_container_of(&sub.a, struct foobar, a));
+                c_assert(&sub == c_container_of(&sub.b, struct foobar, b));
+                c_assert(&sub == c_container_of((const char *)&sub.b, struct foobar, b));
         }
 
         /*
@@ -146,28 +147,28 @@ static void test_misc(int non_constant_expr) {
          */
         {
                 foo = 0;
-                assert(c_max(1, 5) == 5);
-                assert(c_max(-1, 5) == 5);
-                assert(c_max(-1, -5) == -1);
-                assert(c_max(foo++, -1) == 0);
-                assert(foo == 1);
-                assert(c_max(foo++, foo++) > 0);
-                assert(foo == 3);
+                c_assert(c_max(1, 5) == 5);
+                c_assert(c_max(-1, 5) == 5);
+                c_assert(c_max(-1, -5) == -1);
+                c_assert(c_max(foo++, -1) == 0);
+                c_assert(foo == 1);
+                c_assert(c_max(foo++, foo++) > 0);
+                c_assert(foo == 3);
 
-                assert(__builtin_constant_p(c_max(1, 5)));
-                assert(!__builtin_constant_p(c_max(1, non_constant_expr)));
+                c_assert(__builtin_constant_p(c_max(1, 5)));
+                c_assert(!__builtin_constant_p(c_max(1, non_constant_expr)));
 
                 foo = 0;
-                assert(c_min(1, 5) == 1);
-                assert(c_min(-1, 5) == -1);
-                assert(c_min(-1, -5) == -5);
-                assert(c_min(foo++, 1) == 0);
-                assert(foo == 1);
-                assert(c_min(foo++, foo++) > 0);
-                assert(foo == 3);
+                c_assert(c_min(1, 5) == 1);
+                c_assert(c_min(-1, 5) == -1);
+                c_assert(c_min(-1, -5) == -5);
+                c_assert(c_min(foo++, 1) == 0);
+                c_assert(foo == 1);
+                c_assert(c_min(foo++, foo++) > 0);
+                c_assert(foo == 3);
 
-                assert(__builtin_constant_p(c_min(1, 5)));
-                assert(!__builtin_constant_p(c_min(1, non_constant_expr)));
+                c_assert(__builtin_constant_p(c_min(1, 5)));
+                c_assert(!__builtin_constant_p(c_min(1, non_constant_expr)));
         }
 
         /*
@@ -177,26 +178,26 @@ static void test_misc(int non_constant_expr) {
          */
         {
                 foo = 8;
-                assert(c_less_by(1, 5) == 0);
-                assert(c_less_by(5, 1) == 4);
-                assert(c_less_by(foo++, 1) == 7);
-                assert(foo == 9);
-                assert(c_less_by(foo++, foo++) >= 0);
-                assert(foo == 11);
+                c_assert(c_less_by(1, 5) == 0);
+                c_assert(c_less_by(5, 1) == 4);
+                c_assert(c_less_by(foo++, 1) == 7);
+                c_assert(foo == 9);
+                c_assert(c_less_by(foo++, foo++) >= 0);
+                c_assert(foo == 11);
 
-                assert(__builtin_constant_p(c_less_by(1, 5)));
-                assert(!__builtin_constant_p(c_less_by(1, non_constant_expr)));
+                c_assert(__builtin_constant_p(c_less_by(1, 5)));
+                c_assert(!__builtin_constant_p(c_less_by(1, non_constant_expr)));
 
                 foo = 8;
-                assert(c_clamp(foo, 1, 5) == 5);
-                assert(c_clamp(foo, 9, 20) == 9);
-                assert(c_clamp(foo++, 1, 5) == 5);
-                assert(foo == 9);
-                assert(c_clamp(foo++, foo++, foo++) >= 0);
-                assert(foo == 12);
+                c_assert(c_clamp(foo, 1, 5) == 5);
+                c_assert(c_clamp(foo, 9, 20) == 9);
+                c_assert(c_clamp(foo++, 1, 5) == 5);
+                c_assert(foo == 9);
+                c_assert(c_clamp(foo++, foo++, foo++) >= 0);
+                c_assert(foo == 12);
 
-                assert(__builtin_constant_p(c_clamp(0, 1, 5)));
-                assert(!__builtin_constant_p(c_clamp(1, 0, non_constant_expr)));
+                c_assert(__builtin_constant_p(c_clamp(0, 1, 5)));
+                c_assert(!__builtin_constant_p(c_clamp(1, 0, non_constant_expr)));
         }
 
         /*
@@ -210,36 +211,36 @@ static void test_misc(int non_constant_expr) {
 
 #define TEST_ALT_DIV(_x, _y) (((_x) + (_y) - 1) / (_y))
                 foo = 8;
-                assert(c_div_round_up(0, 5) == 0);
-                assert(c_div_round_up(1, 5) == 1);
-                assert(c_div_round_up(5, 5) == 1);
-                assert(c_div_round_up(6, 5) == 2);
-                assert(c_div_round_up(foo++, 1) == 8);
-                assert(foo == 9);
-                assert(c_div_round_up(foo++, foo++) >= 0);
-                assert(foo == 11);
+                c_assert(c_div_round_up(0, 5) == 0);
+                c_assert(c_div_round_up(1, 5) == 1);
+                c_assert(c_div_round_up(5, 5) == 1);
+                c_assert(c_div_round_up(6, 5) == 2);
+                c_assert(c_div_round_up(foo++, 1) == 8);
+                c_assert(foo == 9);
+                c_assert(c_div_round_up(foo++, foo++) >= 0);
+                c_assert(foo == 11);
 
-                assert(__builtin_constant_p(c_div_round_up(1, 5)));
-                assert(!__builtin_constant_p(c_div_round_up(1, non_constant_expr)));
+                c_assert(__builtin_constant_p(c_div_round_up(1, 5)));
+                c_assert(!__builtin_constant_p(c_div_round_up(1, non_constant_expr)));
 
                 /* alternative calculation is [(x + y - 1) / y], but it may overflow */
                 for (i = 0; i <= 0xffff; ++i) {
                         for (j = 1; j <= 0xff; ++j)
-                                assert(c_div_round_up(i, j) == TEST_ALT_DIV(i, j));
+                                c_assert(c_div_round_up(i, j) == TEST_ALT_DIV(i, j));
                         for (j = 0xff00; j <= 0xffff; ++j)
-                                assert(c_div_round_up(i, j) == TEST_ALT_DIV(i, j));
+                                c_assert(c_div_round_up(i, j) == TEST_ALT_DIV(i, j));
                 }
 
                 /* make sure it doesn't suffer from high overflow */
-                assert(UINT32_C(0xfffffffa) % 10 == 0);
-                assert(UINT32_C(0xfffffffa) / 10 == UINT32_C(429496729));
-                assert(c_div_round_up(UINT32_C(0xfffffffa), 10) == UINT32_C(429496729));
-                assert(TEST_ALT_DIV(UINT32_C(0xfffffffa), 10) == 0); /* overflow */
+                c_assert(UINT32_C(0xfffffffa) % 10 == 0);
+                c_assert(UINT32_C(0xfffffffa) / 10 == UINT32_C(429496729));
+                c_assert(c_div_round_up(UINT32_C(0xfffffffa), 10) == UINT32_C(429496729));
+                c_assert(TEST_ALT_DIV(UINT32_C(0xfffffffa), 10) == 0); /* overflow */
 
-                assert(UINT32_C(0xfffffffd) % 10 == 3);
-                assert(UINT32_C(0xfffffffd) / 10 == UINT32_C(429496729));
-                assert(c_div_round_up(UINT32_C(0xfffffffd), 10) == UINT32_C(429496730));
-                assert(TEST_ALT_DIV(UINT32_C(0xfffffffd), 10) == 0);
+                c_assert(UINT32_C(0xfffffffd) % 10 == 3);
+                c_assert(UINT32_C(0xfffffffd) / 10 == UINT32_C(429496729));
+                c_assert(c_div_round_up(UINT32_C(0xfffffffd), 10) == UINT32_C(429496730));
+                c_assert(TEST_ALT_DIV(UINT32_C(0xfffffffd), 10) == 0);
 #undef TEST_ALT_DIV
         }
 
@@ -261,13 +262,13 @@ static void test_misc(int non_constant_expr) {
          * must always be >0 and equivalent to `errno' if set.
          */
         {
-                assert(c_errno() > 0);
+                c_assert(c_errno() > 0);
 
                 close(-1);
-                assert(c_errno() == errno);
+                c_assert(c_errno() == errno);
 
                 errno = 0;
-                assert(c_errno() != errno);
+                c_assert(c_errno() != errno);
         }
 }
 
@@ -294,15 +295,15 @@ static void test_destructors(void) {
                         size_t sz = 128 * 1024;
 
                         foo = malloc(sz);
-                        assert(foo);
+                        c_assert(foo);
 
                         bar = malloc(sz);
-                        assert(bar);
+                        c_assert(bar);
                         bar = c_free(bar);
-                        assert(!bar);
+                        c_assert(!bar);
                 }
 
-                assert(c_free(NULL) == NULL);
+                c_assert(c_free(NULL) == NULL);
         }
 
         /*
@@ -313,14 +314,14 @@ static void test_destructors(void) {
                 int fd;
 
                 fd = eventfd(0, EFD_CLOEXEC);
-                assert(fd >= 0);
+                c_assert(fd >= 0);
 
                 /* verify c_close() returns -1 */
-                assert(c_close(fd) == -1);
+                c_assert(c_close(fd) == -1);
 
                 /* verify c_close() deals fine with negative fds */
-                assert(c_close(-1) == -1);
-                assert(c_close(-16) == -1);
+                c_assert(c_close(-1) == -1);
+                c_assert(c_close(-16) == -1);
 
                 /* make sure c_closep() deals fine with negative FDs */
                 {
@@ -338,8 +339,8 @@ static void test_destructors(void) {
                         _c_cleanup_(c_closep) int t = -1;
 
                         t = eventfd(0, EFD_CLOEXEC);
-                        assert(t >= 0);
-                        assert(t == fd);
+                        c_assert(t >= 0);
+                        c_assert(t == fd);
                 }
         }
 
@@ -352,17 +353,17 @@ static void test_destructors(void) {
                 int fd;
 
                 fd = eventfd(0, EFD_CLOEXEC);
-                assert(fd >= 0);
+                c_assert(fd >= 0);
 
                 f = fdopen(fd, "r");
-                assert(f);
+                c_assert(f);
 
                 /* verify c_fclose() returns NULL */
                 f = c_fclose(f);
-                assert(!f);
+                c_assert(!f);
 
                 /* verify c_fclose() deals fine with NULL */
-                assert(!c_fclose(NULL));
+                c_assert(!c_fclose(NULL));
 
                 /* make sure c_flosep() deals fine with NULL */
                 {
@@ -381,11 +382,11 @@ static void test_destructors(void) {
                         int tfd;
 
                         tfd = eventfd(0, EFD_CLOEXEC);
-                        assert(tfd >= 0);
-                        assert(tfd == fd); /* the same as before */
+                        c_assert(tfd >= 0);
+                        c_assert(tfd == fd); /* the same as before */
 
                         t = fdopen(tfd, "r");
-                        assert(t);
+                        c_assert(t);
                 }
         }
 }
