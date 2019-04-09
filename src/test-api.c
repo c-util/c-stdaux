@@ -165,6 +165,11 @@ static void test_api_macros(void) {
                 c_assert(c_div_round_up(1, 1) == 1);
         }
 
+        /* c_align_to */
+        {
+                c_assert(c_align_to(0, 0) == 0);
+        }
+
         /* C_DEFINE_CLEANUP / C_DEFINE_DIRECT_CLEANUP */
         {
                 int v = 0;

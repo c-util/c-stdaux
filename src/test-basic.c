@@ -245,6 +245,30 @@ static void test_misc(int non_constant_expr) {
         }
 
         /*
+         * Align to multiple of: Test the alignment macro. Check that it does
+         * not suffer from incorrect integer overflows, neither should it
+         * exceed the boundaries of the input type.
+         */
+        {
+                c_assert(c_align_to(UINT32_C(0), 1) == 0);
+                c_assert(c_align_to(UINT32_C(0), 2) == 0);
+                c_assert(c_align_to(UINT32_C(0), 4) == 0);
+                c_assert(c_align_to(UINT32_C(0), 8) == 0);
+                c_assert(c_align_to(UINT32_C(1), 8) == 8);
+
+                c_assert(c_align_to(UINT32_C(0xffffffff), 8) == 0);
+                c_assert(c_align_to(UINT32_C(0xfffffff1), 8) == 0xfffffff8);
+                c_assert(c_align_to(UINT32_C(0xfffffff1), 8) == 0xfffffff8);
+
+                c_assert(__builtin_constant_p(c_align_to(16, 8)));
+                c_assert(!__builtin_constant_p(c_align_to(non_constant_expr, 8)));
+                c_assert(!__builtin_constant_p(c_align_to(16, non_constant_expr)));
+                c_assert(!__builtin_constant_p(c_align_to(16, non_constant_expr ? 8 : 16)));
+                c_assert(__builtin_constant_p(c_align_to(16, 7 + 1)));
+                c_assert(c_align_to(15, non_constant_expr ? 8 : 16) == 16);
+        }
+
+        /*
          * Test c_assert(). Make sure side-effects are always evaluated, and
          * variables are marked as used regardless of NDEBUG.
          */

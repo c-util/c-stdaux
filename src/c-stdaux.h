@@ -405,6 +405,26 @@ _Static_assert(_assertion, _message); \
 #define C_DIV_ROUND_UP(_x, _y) ((_x) / (_y) + !!((_x) % (_y)))
 
 /**
+ * c_align_to() - align value to a multiple
+ * @_val:       value to align
+ * @_to:        align to multiple of this
+ *
+ * This aligns @_val to a multiple of @_to. If @_val is already a multiple of
+ * @_to, @_val is returned unchanged. This function operates within the
+ * boundaries of the type of @_val and @_to. Make sure to cast them if needed.
+ *
+ * The arguments of this macro are evaluated exactly once. If both arguments
+ * are a constant expression, this also yields a constant return value.
+ *
+ * Note that @_to must be a power of 2, otherwise the behavior will not match
+ * expectations.
+ *
+ * Return: @_val aligned to a multiple of @_to
+ */
+#define c_align_to(_val, _to) C_CC_MACRO2(C_ALIGN_TO, (_val), (_to))
+#define C_ALIGN_TO(_val, _to) (((_val) + (_to) - 1) & ~((_to) - 1))
+
+/**
  * c_assert() - runtime assertions
  * @expr_result:                result of an expression
  *
