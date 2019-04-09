@@ -6,6 +6,7 @@
 #undef NDEBUG
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "c-stdaux.h"
 
 static _c_const_ int const_fn(void) { return 0; }
@@ -86,6 +87,82 @@ static void test_api_macros(void) {
         /* _c_unused_ */
         {
                 assert(!unused_fn());
+        }
+
+        /* C_EXPR_ASSERT */
+        {
+                int v = C_EXPR_ASSERT(0, true, "");
+
+                assert(!v);
+        }
+
+        /* C_STRINGIFY */
+        {
+                const char v[] = C_STRINGIFY(foobar);
+
+                assert(!strcmp(v, "foobar"));
+        }
+
+        /* C_CONCATENATE */
+        {
+                int C_CONCATENATE(a, b) = 0;
+
+                assert(!ab);
+        }
+
+        /* C_EXPAND */
+        {
+                int x[] = { C_EXPAND((0, 1)) };
+
+                assert(sizeof(x) / sizeof(*x) == 2);
+        }
+
+        /* C_VAR */
+        {
+                int C_VAR = 0; assert(!C_VAR); /* must be on the same line */
+        }
+
+        /* C_CC_MACRO1, C_CC_MACRO2, C_CC_MACRO3 */
+        {
+#define MACRO_REAL(_x1, _x2, _x3) ((_x1 + _x2 + _x3) * 0)
+#define MACRO1(_x1) C_CC_MACRO1(MACRO_REAL, _x1, 0, 0)
+#define MACRO2(_x1, _x2) C_CC_MACRO2(MACRO_REAL, _x1, _x2, 0)
+#define MACRO3(_x1, _x2, _x3) C_CC_MACRO3(MACRO_REAL, _x1, _x2, _x3)
+                assert(!MACRO1(1));
+                assert(!MACRO2(1, 1));
+                assert(!MACRO3(1, 1, 1));
+#undef MACRO3
+#undef MACRO2
+#undef MACRO1
+        }
+
+        /* C_ARRAY_SIZE */
+        {
+                int v[] = { 0, 1, 2 };
+                assert(C_ARRAY_SIZE(v) == 3);
+        }
+
+        /* C_DECIMAL_MAX */
+        {
+                assert(C_DECIMAL_MAX(uint8_t) == 4);
+        }
+
+        /* c_container_of */
+        {
+                struct FooBarContainer {
+                        int member;
+                } v = {};
+
+                assert(c_container_of(&v.member, struct FooBarContainer, member) == &v);
+        }
+
+        /* c_max, c_min, c_less_by, c_clamp, c_div_round_up */
+        {
+                assert(c_max(0, 0) == 0);
+                assert(c_min(0, 0) == 0);
+                assert(c_less_by(0, 0) == 0);
+                assert(c_clamp(0, 0, 0) == 0);
+                assert(c_div_round_up(1, 1) == 1);
         }
 
         /* C_DEFINE_CLEANUP / C_DEFINE_DIRECT_CLEANUP */
