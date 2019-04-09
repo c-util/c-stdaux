@@ -253,8 +253,18 @@ static void test_misc(int non_constant_expr) {
 
 #define NDEBUG 1
                 c_assert(!v1);
+                if (v1)
+                        abort();
+                c_assert(++v1);
+                if (v1 != 1)
+                        abort();
 #undef NDEBUG
                 c_assert(!v2);
+                if (v2)
+                        abort();
+                c_assert(++v2);
+                if (v2 != 1)
+                        abort();
         }
 
         /*
