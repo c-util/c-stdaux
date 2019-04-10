@@ -170,6 +170,11 @@ static void test_api_macros(void) {
                 c_assert(c_align_to(0, 0) == 0);
         }
 
+        /* c_assert */
+        {
+                c_assert(true);
+        }
+
         /* C_DEFINE_CLEANUP / C_DEFINE_DIRECT_CLEANUP */
         {
                 int v = 0;
@@ -181,7 +186,6 @@ static void test_api_macros(void) {
 
 static void test_api_functions(void) {
         void *fns[] = {
-                (void *)c_assert,
                 (void *)c_errno,
                 (void *)c_free,
                 (void *)c_close,

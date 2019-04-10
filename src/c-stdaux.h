@@ -437,9 +437,10 @@ _Static_assert(_assertion, _message); \
  * macro is used with constant expressions, the compiler will be able to
  * optimize it away.
  */
-static inline void c_assert(bool expr_result) {
-        assert(expr_result);
-}
+#define c_assert(_x) ({                                                         \
+                const _c_unused_ bool c_assert_result = (_x);                   \
+                assert(c_assert_result && #_x);                                 \
+        })
 
 /**
  * c_errno() - return valid errno
