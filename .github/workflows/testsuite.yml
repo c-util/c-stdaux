@@ -1,0 +1,11 @@
+name: testsuite
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Hello World!
+      run: echo Hello, world!
