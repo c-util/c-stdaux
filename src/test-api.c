@@ -202,7 +202,7 @@ static void test_api_functions(void) {
                 c_assert(!!fns[i]);
 }
 
-int main(_c_unused_ int argc, _c_unused_ char **argv) {
+int main(void) {
         test_api_macros();
         test_api_functions();
         return 0;
