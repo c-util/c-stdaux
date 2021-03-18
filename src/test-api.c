@@ -11,8 +11,10 @@
 
 static _c_const_ int const_fn(void) { return 0; }
 static _c_deprecated_ _c_unused_ int deprecated_fn(void) { return 0; }
+_c_hidden_ int c_internal_hidden_fn(void);
 _c_hidden_ int c_internal_hidden_fn(void) { return 0; }
 static _c_printf_(1, 2) int printf_fn(const _c_unused_ char *f, ...) { return 0; }
+_c_public_ int c_internal_public_fn(void);
 _c_public_ int c_internal_public_fn(void) { return 0; }
 static _c_pure_ int pure_fn(void) { return 0; }
 static _c_sentinel_ int sentinel_fn(const _c_unused_ char *f, ...) { return 0; }
