@@ -184,6 +184,13 @@ static void test_api_macros(void) {
                 cleanup_fnp(&v);
                 direct_cleanup_fnp(&v);
         }
+
+        /* c_thread_local */
+        {
+                static c_thread_local int i;
+
+                c_assert(i == 0);
+        }
 }
 
 static void test_api_functions(void) {

@@ -543,6 +543,23 @@ C_DEFINE_DIRECT_CLEANUP(int, c_close);
 C_DEFINE_CLEANUP(FILE *, c_fclose);
 C_DEFINE_CLEANUP(DIR *, c_closedir);
 
+/*
+ * Thread-local storage
+ */
+#ifdef thread_local
+#define c_thread_local thread_local
+/*
+ * C11 introduces _Thread_local. glibc < 2.16 doesn't support it and
+ * doesn't define __STDC_NO_THREADS__. See
+ * http://gcc.gnu.org/bugzilla/show_bug.cgi?id=53769
+ */
+#elif __STDC_VERSION__ >= 201112L && !defined(__STDC_NO_THREADS__) \
+    && !(defined(__GNU_LIBRARY__) && __GLIBC__ == 2 && __GLIBC_MINOR__ < 16)
+#define c_thread_local _Thread_local
+#else
+#define c_thread_local __thread
+#endif
+
 #ifdef __cplusplus
 }
 #endif
