@@ -6,7 +6,7 @@
 
 libcstdaux_dep = declare_dependency(
         include_directories: include_directories('.'),
-        variables: { 'cflags': cflags },
+        variables: { 'cflags': ' '.join(cflags) },
         version: meson.project_version(),
 )
 

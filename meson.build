@@ -19,7 +19,8 @@ mod_pkgconfig = import('pkgconfig')
 # and behavior to our coding-style.
 #
 # This variable is exported to dependent projects via meson for them to use as
-# well.
+# well. Since these exports are limited to strings, we need to be careful that
+# the individual entries do not contain spaces (see the assertion below).
 #
 cflags = meson.get_compiler('c').get_supported_arguments(
         # Enable GNU features of our dependencies. See feature_test_macros(7).
@@ -76,6 +77,7 @@ cflags = meson.get_compiler('c').get_supported_arguments(
         # Make sure literal strings are considered 'const'.
         '-Wwrite-strings',
 )
+assert(not ''.join(cflags).contains(' '), 'Malformed compiler flags.')
 add_project_arguments(cflags, language: 'c')
 
 subdir('src')
