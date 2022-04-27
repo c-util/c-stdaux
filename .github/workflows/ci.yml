@@ -19,3 +19,10 @@ jobs:
       with:
         m32: 1
         valgrind: 1
+
+  ci-test:
+    uses: bus1/cabuild/.github/workflows/ci-c-util.yml@main
+    with:
+      cabuild_ref: "main"
+      m32: true
+      valgrind: true
