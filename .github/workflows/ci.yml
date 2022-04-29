@@ -13,4 +13,5 @@ jobs:
     with:
       cabuild_ref: "main"
       m32: true
+      matrixmode: true
       valgrind: true
