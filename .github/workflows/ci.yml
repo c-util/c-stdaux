@@ -9,9 +9,9 @@ on:
 jobs:
   ci:
     name: CI with Default Configuration
-    uses: bus1/cabuild/.github/workflows/ci-c-util.yml@main
+    uses: bus1/cabuild/.github/workflows/ci-c-util.yml@v1
     with:
-      cabuild_ref: "main"
+      cabuild_ref: "v1"
       m32: true
       matrixmode: true
       valgrind: true
