@@ -1,11 +1,10 @@
 # c-stdaux - Auxiliary macros and functions for the C standard library
 
-## CHANGES WITH 1:
+## CHANGES WITH 1.0.0:
 
         * Initial release of c-stdaux.
 
-        * TBD
+        Contributions from: David Rheinsberg, Lorenzo Arena, Michele Dionisio,
+                            Yuri Chornoivan
 
-        Contributions from: TBD
-
-        - TBD, YYYY-MM-DD
+        - Dußlingen, 2022-05-12
