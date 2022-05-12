@@ -343,6 +343,19 @@ static void test_misc(int non_constant_expr) {
                 c_memzero(&v, sizeof(v));
                 c_assert(v == (uint64_t)0);
         }
+
+        /*
+         * Test c_memcpy() with a simple 8-byte copy.
+         */
+        {
+                uint64_t v1 = (uint64_t)-1, v2 = (uint64_t)0;
+
+                c_assert(v1 == (uint64_t)-1);
+                c_memcpy(&v1, &v2, sizeof(v1));
+                c_assert(v1 == (uint64_t)0);
+
+                c_memcpy(NULL, NULL, 0);
+        }
 }
 
 /*

@@ -503,6 +503,24 @@ static inline void *c_memzero(void *p, size_t n) {
         return c_memset(p, 0, n);
 }
 
+/**
+ * c_memcpy() - copy memory area
+ * @dst:        pointer to target area
+ * @src:        pointer to source area
+ * @n:          length of area to copy
+ *
+ * Copy the memory of size @n from @src to @dst, just as `memcpy(3)` does,
+ * except this function allows either to be NULL if @n is zero. In the latter
+ * case, the operation is a no-op.
+ *
+ * Return: @p is returned.
+ */
+static inline void *c_memcpy(void *dst, const void *src, size_t n) {
+        if (n > 0)
+                memcpy(dst, src, n);
+        return dst;
+}
+
 /*
  * Common Destructors
  *
