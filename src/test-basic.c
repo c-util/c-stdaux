@@ -304,6 +304,34 @@ static void test_misc(int non_constant_expr) {
                 errno = 0;
                 c_assert(c_errno() != errno);
         }
+
+        /*
+         * Test c_memset(). Simply verify its most basic behavior, as well as
+         * calling it on empty regions.
+         */
+        {
+                uint64_t v = (uint64_t)-1;
+                size_t n;
+                void *p;
+
+                /* try filling with 0 and 0xff */
+                c_assert(v == (uint64_t)-1);
+                c_memset(&v, 0, sizeof(v));
+                c_assert(v == (uint64_t)0);
+                c_memset(&v, 0xff, sizeof(v));
+                c_assert(v == (uint64_t)-1);
+
+                /*
+                 * Try tricking the optimizer into thinking @p cannot be NULL,
+                 * as normal `memset(3)` would allow.
+                 */
+                p = NULL;
+                n = 0;
+                c_memset(p, 0, n);
+                if (p)
+                        abort();
+                c_assert(p == NULL);
+        }
 }
 
 /*

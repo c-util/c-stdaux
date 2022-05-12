@@ -189,6 +189,7 @@ static void test_api_macros(void) {
 static void test_api_functions(void) {
         void *fns[] = {
                 (void *)c_errno,
+                (void *)c_memset,
                 (void *)c_free,
                 (void *)c_close,
                 (void *)c_fclose,

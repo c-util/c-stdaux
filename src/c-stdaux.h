@@ -470,6 +470,24 @@ static inline int c_errno(void) {
         return _c_likely_(errno > 0) ? errno : ENOTRECOVERABLE;
 }
 
+/**
+ * c_memset() - fill memory region with constant byte
+ * @p:          pointer to memory region, if non-empty
+ * @c:          value to fill with
+ * @n:          size of the memory region in bytes
+ *
+ * This function works like `memset(3)` if @n is non-zero. If @n is zero, this
+ * function is a no-op. Therefore, unlike `memset(3)` it is safe to call this
+ * function with NULL as @p if @n is 0.
+ *
+ * Return: @p is returned.
+ */
+static inline void *c_memset(void *p, int c, size_t n) {
+        if (n > 0)
+                memset(p, c, n);
+        return p;
+}
+
 /*
  * Common Destructors
  *
