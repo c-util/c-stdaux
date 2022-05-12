@@ -488,6 +488,21 @@ static inline void *c_memset(void *p, int c, size_t n) {
         return p;
 }
 
+/**
+ * c_memzero() - clear memory area
+ * @p:          pointer to memory region, if non-empty
+ * @n:          size of the memory region in bytes
+ *
+ * Clear a memory area to 0. If the memory area is empty, this is a no-op.
+ * Similar to c_memset(), this function allows @p to be NULL if the area is
+ * empty.
+ *
+ * Return: @p is returned.
+ */
+static inline void *c_memzero(void *p, size_t n) {
+        return c_memset(p, 0, n);
+}
+
 /*
  * Common Destructors
  *

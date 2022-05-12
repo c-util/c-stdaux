@@ -332,6 +332,17 @@ static void test_misc(int non_constant_expr) {
                         abort();
                 c_assert(p == NULL);
         }
+
+        /*
+         * Test c_memzero(). Simply verify it can clear a trivial area to 0.
+         */
+        {
+                uint64_t v = (uint64_t)-1;
+
+                c_assert(v == (uint64_t)-1);
+                c_memzero(&v, sizeof(v));
+                c_assert(v == (uint64_t)0);
+        }
 }
 
 /*
