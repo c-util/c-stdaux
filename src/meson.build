@@ -17,6 +17,7 @@ if not meson.is_subproject()
                 description: project_description,
                 filebase: 'libcstdaux-'+major,
                 name: 'libcstdaux',
+                unescaped_variables: { 'cflags': ' '.join(cflags) },
                 version: meson.project_version(),
         )
 endif
