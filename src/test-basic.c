@@ -7,7 +7,6 @@
 
 #undef NDEBUG
 #include <stdlib.h>
-#include <sys/eventfd.h>
 #include "c-stdaux.h"
 
 /*
@@ -397,13 +396,16 @@ static void test_destructors(void) {
          * helpers actually close the fd, and cope fine with negative numbers.
          */
         {
-                int fd;
+                int r, fd1, fd2, tmp[2];
 
-                fd = eventfd(0, EFD_CLOEXEC);
-                c_assert(fd >= 0);
+                r = pipe(tmp);
+                c_assert(r >= 0);
+                fd1 = tmp[0];
+                fd2 = tmp[1];
 
                 /* verify c_close() returns -1 */
-                c_assert(c_close(fd) == -1);
+                c_assert(c_close(fd1) == -1);
+                c_assert(c_close(fd2) == -1);
 
                 /* verify c_close() deals fine with negative fds */
                 c_assert(c_close(-1) == -1);
@@ -422,11 +424,15 @@ static void test_destructors(void) {
                  * path works as well.
                  */
                 for (i = 0; i < 2; ++i) {
-                        _c_cleanup_(c_closep) _c_unused_ int t = -1;
+                        _c_cleanup_(c_closep) _c_unused_ int t1 = -1, t2 = -1;
 
-                        t = eventfd(0, EFD_CLOEXEC);
-                        c_assert(t >= 0);
-                        c_assert(t == fd);
+                        r = pipe(tmp);
+                        c_assert(r >= 0);
+                        t1 = tmp[0];
+                        t2 = tmp[1];
+
+                        c_assert(t1 == fd1);
+                        c_assert(t2 == fd2);
                 }
         }
 
@@ -435,11 +441,13 @@ static void test_destructors(void) {
          * tests for c_close() (i.e., sparse FD allocation).
          */
         {
+                int r, fd, tmp[2];
                 FILE *f;
-                int fd;
 
-                fd = eventfd(0, EFD_CLOEXEC);
-                c_assert(fd >= 0);
+                r = pipe(tmp);
+                c_assert(r >= 0);
+                fd = tmp[0];
+                c_close(tmp[1]);
 
                 f = fdopen(fd, "r");
                 c_assert(f);
@@ -467,10 +475,12 @@ static void test_destructors(void) {
                         _c_cleanup_(c_fclosep) _c_unused_ FILE *t = NULL;
                         int tfd;
 
-                        tfd = eventfd(0, EFD_CLOEXEC);
-                        c_assert(tfd >= 0);
-                        c_assert(tfd == fd); /* the same as before */
+                        r = pipe(tmp);
+                        c_assert(r >= 0);
+                        tfd = tmp[0];
+                        c_close(tmp[1]);
 
+                        c_assert(tfd == fd); /* the same as before */
                         t = fdopen(tfd, "r");
                         c_assert(t);
                 }
