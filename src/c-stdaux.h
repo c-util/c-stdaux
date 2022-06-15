@@ -82,10 +82,11 @@ extern "C" {
  *
  * Return: Evaluates to @_expr.
  */
+#define C_EXPR_ASSERT(_expr, _assertion, _message) C_INTERNAL_EXPR_ASSERT((_expr), (_assertion), _message)
 #if defined(__COVERITY__) // Coverity cannot const-fold __builtin_choose_expr()
-#  define C_EXPR_ASSERT(_expr, _assertion, _message) (_expr)
+#  define C_INTERNAL_EXPR_ASSERT(_expr, _assertion, _message) (_expr)
 #else
-#  define C_EXPR_ASSERT(_expr, _assertion, _message)                    \
+#  define C_INTERNAL_EXPR_ASSERT(_expr, _assertion, _message)           \
         /* indentation and line-split to get better diagnostics */      \
         (__builtin_choose_expr(                                         \
                 !!(1 + 0 * sizeof(                                      \
