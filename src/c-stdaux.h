@@ -445,7 +445,7 @@ _Static_assert(_assertion, _message); \
 #define c_container_of(_ptr, _type, _member) C_CC_MACRO1(C_CONTAINER_OF, (_ptr), _type, _member)
 #define C_CONTAINER_OF(_ptr, _type, _member)                                            \
         C_EXPR_ASSERT(                                                                  \
-                (_ptr ? (_type*)( (char*)_ptr - offsetof(_type, _member) ) : NULL),     \
+                (_ptr ? (_type*)c_internal_container_of((void *)_ptr, offsetof(_type, _member)) : NULL),     \
                 __builtin_types_compatible_p(                                           \
                         __typeof__(*(_ptr)),                                            \
                         __typeof__(((_type){})._member)                                 \
@@ -455,6 +455,13 @@ _Static_assert(_assertion, _message); \
                 ),                                                                      \
                 "Invalid use of C_CONTAINER_OF()"                                       \
         )
+static inline void *c_internal_container_of(void *ptr, size_t offset) {
+        /*
+         * Arithmetic on NULL is UB, even if in dead-code. Hide it in a proper
+         * C function, so the macro never emits it as code.
+         */
+        return (char *)ptr - offset;
+}
 
 /**
  * c_max() - Compute maximum of two values
