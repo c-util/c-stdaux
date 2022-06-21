@@ -137,6 +137,8 @@ static void test_misc(int non_constant_expr) {
                 c_assert(&sub == c_container_of(&sub.a, struct foobar, a));
                 c_assert(&sub == c_container_of(&sub.b, struct foobar, b));
                 c_assert(&sub == c_container_of((const char *)&sub.b, struct foobar, b));
+
+                c_assert(!c_container_of(NULL, struct foobar, b));
         }
 
         /*
