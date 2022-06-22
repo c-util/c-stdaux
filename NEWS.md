@@ -24,9 +24,9 @@
           false-positives from code sanitizers that otherwise trip over the
           NULL pointer dereferences.
 
-        Contributions from: David Rheinsberg
+        Contributions from: David Rheinsberg, Evgeny Vereshchagin
 
-        - Brno, 2022-06-21
+        - Brno, 2022-06-22
 
 ## CHANGES WITH 1.0.0:
 
