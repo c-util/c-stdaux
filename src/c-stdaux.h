@@ -812,7 +812,7 @@ static inline FILE *c_fclose(FILE *f) {
 }
 
 /**
- * c_closedir() - Destructor-wrapper for closedir)
+ * c_closedir() - Destructor-wrapper for closedir()
  * @d:          Directory handle to pass to destructor, or NULL
  *
  * Wrapper around ``closedir()``, but a no-op if ``NULL`` is passed. Always
