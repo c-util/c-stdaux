@@ -229,7 +229,7 @@ extern "C" {
  *
  * Alias for ``__builtin_expect(!!(_x), 1)``.
  *
- * Return: The expression ``_x`` is evaluated and returned.
+ * Return: The expression ``!!_x`` is evaluated and returned.
  */
 #define _c_likely_(_x) (__builtin_expect(!!(_x), 1))
 
@@ -239,7 +239,7 @@ extern "C" {
  *
  * Alias for ``__builtin_expect(!!(_x), 0)``.
  *
- * Return: The expression ``_x`` is evaluated and returned.
+ * Return: The expression ``!!_x`` is evaluated and returned.
  */
 #define _c_unlikely_(_x) (__builtin_expect(!!(_x), 0))
 
