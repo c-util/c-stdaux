@@ -41,6 +41,58 @@ extern "C" {
 /**/
 
 /**
+ * DOC: Target Properties
+ *
+ * Since multiple target compilers and systems are supported, ``c-stdaux.h``
+ * exports a set of symbols that identify the target of the current compilation.
+ * The following pre-processor constants are defined (and evaluate to ``1``) if
+ * the current compilation targets the specific system. Note that multiple
+ * constants might be defined at the same time if compatibility to multiple
+ * targets is available.
+ *
+ * - ``C_COMPILER_CLANG``: The compiling software is compatible to the CLang
+ *   LLVM Compiler.
+ * - ``C_COMPILER_GNUC``: The compiling software is compatible to the GNU C
+ *   Compiler.
+ * - ``C_COMPILER_MSVC``: The compiling software is compatible to Microsoft
+ *   Visual Studio (use ``_MSC_VER`` to check for specific version support).
+ * - ``C_OS_LINUX``: The target system is compatible to Linux.
+ * - ``C_OS_MACOS``: The target system is compatible to Apple MacOS.
+ * - ``C_OS_WINDOWS``: The target system is compatible to Microsoft Windows.
+ *
+ * Note that other exported symbols might depend on one of these constants to
+ * be set in order to be exposed. See the documentation of each symbol for
+ * details. Furthermore, if stub implementations do not violate the guarantees
+ * of a symbol, they will be provided for targets that do not provide the
+ * necessary infrastructure (e.g., ``_c_likely_()`` is a no-op on MSVC).
+ */
+/**/
+
+#if defined(__clang__)
+#  define C_COMPILER_CLANG 1
+#endif
+
+#if defined(__GNUC__)
+#  define C_COMPILER_GNUC 1
+#endif
+
+#if defined(_MSC_VER)
+#  define C_COMPILER_MSVC 1
+#endif
+
+#if defined(__linux__)
+#  define C_OS_LINUX 1
+#endif
+
+#if defined(__MACH__) && defined(__APPLE__)
+#  define C_OS_MACOS 1
+#endif
+
+#if defined(_WIN32) || defined(_WIN64)
+#  define C_OS_WINDOWS 1
+#endif
+
+/**
  * DOC: Guaranteed Includes
  *
  * The ``c-stdaux.h`` header includes a set of C Standard Library headers as

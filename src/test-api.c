@@ -26,6 +26,32 @@ C_DEFINE_CLEANUP(int, cleanup_fn);
 C_DEFINE_DIRECT_CLEANUP(int, direct_cleanup_fn);
 
 static void test_api_macros(void) {
+        /* C_COMPILER_* */
+        {
+#ifdef __clang__
+                c_assert(C_COMPILER_CLANG);
+#endif
+#ifdef __GNUC__
+                c_assert(C_COMPILER_GNUC);
+#endif
+#ifdef _MSC_VER
+                c_assert(C_COMPILER_MSVC);
+#endif
+        }
+
+        /* C_OS_* */
+        {
+#ifdef __linux__
+                c_assert(C_OS_LINUX);
+#endif
+#ifdef __APPLE__
+                c_assert(C_OS_MACOS);
+#endif
+#ifdef _WIN32
+                c_assert(C_OS_WINDOWS);
+#endif
+        }
+
         /* _c_cleanup_ */
         {
                 _c_cleanup_(c_freep) void *foo = NULL;
