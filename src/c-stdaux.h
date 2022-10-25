@@ -52,6 +52,7 @@ extern "C" {
  *
  * - ``C_COMPILER_CLANG``: The compiling software is compatible to the CLang
  *   LLVM Compiler.
+ * - ``C_COMPILER_DOCS``: The compilation is part of generating documentation.
  * - ``C_COMPILER_GNUC``: The compiling software is compatible to the GNU C
  *   Compiler.
  * - ``C_COMPILER_MSVC``: The compiling software is compatible to Microsoft
@@ -71,6 +72,8 @@ extern "C" {
 #if defined(__clang__)
 #  define C_COMPILER_CLANG 1
 #endif
+
+/* #define C_COMPILER_DOCS 1 */
 
 #if defined(__GNUC__)
 #  define C_COMPILER_GNUC 1
