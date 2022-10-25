@@ -663,10 +663,11 @@ static inline void *c_internal_container_of(void *ptr, size_t offset) {
  * macro is used with constant expressions, the compiler will be able to
  * optimize it away.
  */
-#define c_assert(_x) ({                                                         \
-                const _c_unused_ bool c_assert_result = (_x);                   \
-                assert(c_assert_result && #_x);                                 \
-        })
+#define c_assert(_x) ((void)(                                                   \
+                (bool)(_x)                                                      \
+                        ? assert(true && #_x)                                   \
+                        : assert(false && #_x)                                  \
+        ))
 
 /**
  * c_errno() - Return valid errno
