@@ -467,7 +467,8 @@ static void test_basic_gnuc(int non_constant_expr) {
 
 #else /* C_MODULE_GNUC */
 
-static void test_basic_gnuc(void) {
+static void test_basic_gnuc(int unused0) {
+        (void)unused0;
 }
 
 #endif /* C_MODULE_GNUC */
