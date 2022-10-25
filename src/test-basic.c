@@ -83,6 +83,7 @@ static void test_basic_generic(void) {
 #endif
         }
 
+#if defined(C_MODULE_GNUC)
         /*
          * Verify that c_free*() works as expected. Since we want to support
          * running under valgrind, there is no easy way to verify the
@@ -108,6 +109,7 @@ static void test_basic_generic(void) {
 
                 c_assert(c_free(NULL) == NULL);
         }
+#endif
 
 #if defined(C_MODULE_UNIX)
         /*
