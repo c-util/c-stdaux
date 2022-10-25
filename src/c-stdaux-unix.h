@@ -13,6 +13,9 @@ extern "C" {
 
 #include <c-stdaux-generic.h>
 
+/* Documented alongside target properties. */
+#define C_MODULE_UNIX 1
+
 /**
  * DOC: Guaranteed Unix Includes
  *

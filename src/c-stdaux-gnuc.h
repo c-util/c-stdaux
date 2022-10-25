@@ -13,6 +13,9 @@ extern "C" {
 
 #include <c-stdaux-generic.h>
 
+/* Documented alongside target properties. */
+#define C_MODULE_GNUC 1
+
 /**
  * DOC: GNUC Compiler Attributes
  *

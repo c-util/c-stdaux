@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+/* Documented alongside target properties. */
+#define C_MODULE_GENERIC 1
+
 /**
  * DOC: Target Properties
  *
@@ -31,6 +34,9 @@ extern "C" {
  * - ``C_OS_LINUX``: The target system is compatible to Linux.
  * - ``C_OS_MACOS``: The target system is compatible to Apple MacOS.
  * - ``C_OS_WINDOWS``: The target system is compatible to Microsoft Windows.
+ * - ``C_MODULE_GENERIC``: The `*-generic.h` module was included.
+ * - ``C_MODULE_GNUC``: The `*-gnuc.h` module was included.
+ * - ``C_MODULE_UNIX``: The `*-unix.h` module was included.
  *
  * Note that other exported symbols might depend on one of these constants to
  * be set in order to be exposed. See the documentation of each symbol for
