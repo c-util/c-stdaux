@@ -193,7 +193,8 @@ static void test_basic_generic(void) {
         {
                 c_assert(c_errno() > 0);
 
-                close(-1);
+                strtol("0xfffffffffffffffffffffffffffffffff", NULL, 0);
+                c_assert(errno == ERANGE);
                 c_assert(c_errno() == errno);
 
                 errno = 0;
