@@ -529,7 +529,8 @@ static void test_basic_unix(void) {
 
 #endif /* C_MODULE_UNIX */
 
-int main(int argc, _c_unused_ char **argv) {
+int main(int argc, char **argv) {
+        (void)argv;
         test_basic_generic();
         test_basic_gnuc(argc);
         test_basic_unix();
