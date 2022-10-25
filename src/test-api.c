@@ -9,24 +9,14 @@
 #include <string.h>
 #include "c-stdaux.h"
 
-static inline _c_always_inline_ int always_inline_fn(void) { return 0; }
-static _c_const_ int const_fn(void) { return 0; }
-static _c_deprecated_ _c_unused_ int deprecated_fn(void) { return 0; }
-_c_hidden_ int c_internal_hidden_fn(void);
-_c_hidden_ int c_internal_hidden_fn(void) { return 0; }
-static _c_printf_(1, 2) int printf_fn(const _c_unused_ char *f, ...) { return 0; }
-_c_public_ int c_internal_public_fn(void);
-_c_public_ int c_internal_public_fn(void) { return 0; }
-static _c_pure_ int pure_fn(void) { return 0; }
-static _c_sentinel_ int sentinel_fn(const _c_unused_ char *f, ...) { return 0; }
-static _c_unused_ int unused_fn(void) { return 0; }
+#if defined(C_MODULE_GENERIC)
 
-static void cleanup_fn(_c_unused_ int p) {}
-static void direct_cleanup_fn(_c_unused_ int p) {}
+static void cleanup_fn(int p) { (void)p; }
+static void direct_cleanup_fn(int p) { (void)p; }
 C_DEFINE_CLEANUP(int, cleanup_fn);
 C_DEFINE_DIRECT_CLEANUP(int, direct_cleanup_fn);
 
-static void test_api_macros(void) {
+static void test_api_generic(void) {
         /* C_COMPILER_* */
         {
 #ifdef __clang__
@@ -53,6 +43,96 @@ static void test_api_macros(void) {
 #endif
         }
 
+        /* _c_likely_ */
+        {
+                c_assert(_c_likely_(true));
+        }
+
+        /* _c_unlikely_ */
+        {
+                c_assert(!_c_unlikely_(false));
+        }
+
+        /* C_STRINGIFY */
+        {
+                const char v[] = C_STRINGIFY(foobar);
+
+                c_assert(!strcmp(v, "foobar"));
+        }
+
+        /* C_CONCATENATE */
+        {
+                int C_CONCATENATE(a, b) = 0;
+
+                c_assert(!ab);
+        }
+
+        /* C_EXPAND */
+        {
+                int x[] = { C_EXPAND((0, 1)) };
+
+                c_assert(sizeof(x) / sizeof(*x) == 2);
+        }
+
+        /* C_VAR */
+        {
+                int C_VAR = 0; c_assert(!C_VAR); /* must be on the same line */
+        }
+
+        /* c_assert */
+        {
+                c_assert(true);
+        }
+
+        /* C_DEFINE_CLEANUP / C_DEFINE_DIRECT_CLEANUP */
+        {
+                int v = 0;
+
+                cleanup_fnp(&v);
+                direct_cleanup_fnp(&v);
+        }
+
+        /* test availability of C symbols */
+        {
+                void *fns[] = {
+                        (void *)c_errno,
+                        (void *)c_memset,
+                        (void *)c_memzero,
+                        (void *)c_memcpy,
+                        (void *)c_free,
+                        (void *)c_fclose,
+                        (void *)c_freep,
+                        (void *)c_fclosep,
+                };
+                size_t i;
+
+                for (i = 0; i < sizeof(fns) / sizeof(*fns); ++i)
+                        c_assert(!!fns[i]);
+        }
+}
+
+#else /* C_MODULE_GENERIC */
+
+static void test_api_generic(void) {
+}
+
+#endif /* C_MODULE_GENERIC */
+
+#if defined(C_MODULE_GNUC)
+
+static inline _c_always_inline_ int always_inline_fn(void) { return 0; }
+static _c_const_ int const_fn(void) { return 0; }
+static _c_deprecated_ _c_unused_ int deprecated_fn(void) { return 0; }
+_c_hidden_ int c_internal_hidden_fn(void);
+_c_hidden_ int c_internal_hidden_fn(void) { return 0; }
+static _c_printf_(1, 2) int printf_fn(const _c_unused_ char *f, ...) { return 0; }
+_c_public_ int c_internal_public_fn(void);
+_c_public_ int c_internal_public_fn(void) { return 0; }
+static _c_pure_ int pure_fn(void) { return 0; }
+static _c_sentinel_ int sentinel_fn(const _c_unused_ char *f, ...) { return 0; }
+static _c_unused_ int unused_fn(void) { return 0; }
+
+static void test_api_gnuc(void) {
         /* _c_always_inline_ */
         {
                 c_assert(!always_inline_fn());
@@ -77,11 +157,6 @@ static void test_api_macros(void) {
         /* _c_hidden_ */
         {
                 c_assert(!c_internal_hidden_fn());
-        }
-
-        /* _c_likely_ */
-        {
-                c_assert(_c_likely_(true));
         }
 
         /* _c_packed_ */
@@ -113,11 +188,6 @@ static void test_api_macros(void) {
                 c_assert(!sentinel_fn("", NULL));
         }
 
-        /* _c_unlikely_ */
-        {
-                c_assert(!_c_unlikely_(false));
-        }
-
         /* _c_unused_ */
         {
                 c_assert(!unused_fn());
@@ -128,32 +198,6 @@ static void test_api_macros(void) {
                 int v = C_EXPR_ASSERT(0, true, "");
 
                 c_assert(!v);
-        }
-
-        /* C_STRINGIFY */
-        {
-                const char v[] = C_STRINGIFY(foobar);
-
-                c_assert(!strcmp(v, "foobar"));
-        }
-
-        /* C_CONCATENATE */
-        {
-                int C_CONCATENATE(a, b) = 0;
-
-                c_assert(!ab);
-        }
-
-        /* C_EXPAND */
-        {
-                int x[] = { C_EXPAND((0, 1)) };
-
-                c_assert(sizeof(x) / sizeof(*x) == 2);
-        }
-
-        /* C_VAR */
-        {
-                int C_VAR = 0; c_assert(!C_VAR); /* must be on the same line */
         }
 
         /* C_CC_MACRO1, C_CC_MACRO2, C_CC_MACRO3 */
@@ -203,44 +247,43 @@ static void test_api_macros(void) {
         {
                 c_assert(c_align_to(0, 0) == 0);
         }
+}
 
-        /* c_assert */
+#else /* C_MODULE_GNUC */
+
+static void test_api_gnuc(void) {
+}
+
+#endif /* C_MODULE_GNUC */
+
+#if defined(C_MODULE_UNIX)
+
+static void test_api_unix(void) {
+        /* test availability of C symbols */
         {
-                c_assert(true);
-        }
+                void *fns[] = {
+                        (void *)c_close,
+                        (void *)c_closedir,
+                        (void *)c_closep,
+                        (void *)c_closedirp,
+                };
+                size_t i;
 
-        /* C_DEFINE_CLEANUP / C_DEFINE_DIRECT_CLEANUP */
-        {
-                int v = 0;
-
-                cleanup_fnp(&v);
-                direct_cleanup_fnp(&v);
+                for (i = 0; i < sizeof(fns) / sizeof(*fns); ++i)
+                        c_assert(!!fns[i]);
         }
 }
 
-static void test_api_functions(void) {
-        void *fns[] = {
-                (void *)c_errno,
-                (void *)c_memset,
-                (void *)c_memzero,
-                (void *)c_memcpy,
-                (void *)c_free,
-                (void *)c_close,
-                (void *)c_fclose,
-                (void *)c_closedir,
-                (void *)c_freep,
-                (void *)c_closep,
-                (void *)c_fclosep,
-                (void *)c_closedirp,
-        };
-        size_t i;
+#else /* C_MODULE_UNIX */
 
-        for (i = 0; i < sizeof(fns) / sizeof(*fns); ++i)
-                c_assert(!!fns[i]);
+static void test_api_unix(void) {
 }
+
+#endif /* C_MODULE_UNIX */
 
 int main(void) {
-        test_api_macros();
-        test_api_functions();
+        test_api_generic();
+        test_api_gnuc();
+        test_api_unix();
         return 0;
 }
