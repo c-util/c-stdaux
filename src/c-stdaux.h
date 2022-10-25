@@ -652,7 +652,7 @@ static inline void *c_internal_container_of(void *ptr, size_t offset) {
 
 /**
  * c_assert() - Runtime assertions
- * @expr_result:                Result of an expression
+ * @_x:                 Result of an expression
  *
  * This function behaves like the standard ``assert(3)`` macro. That is, if
  * ``NDEBUG`` is defined, it is a no-op. In all other cases it will assert that
