@@ -128,7 +128,7 @@ extern "C" {
  * Return: The expression ``!!_x`` is evaluated and returned.
  */
 #define _c_likely_(_x) _c_internal_likely_(_x)
-#ifdef C_COMPILER_GNUC
+#if defined(C_COMPILER_GNUC)
 #  define _c_internal_likely_(_x) (__builtin_expect(!!(_x), 1))
 #else
 #  define _c_internal_likely_(_x) (!!(_x))
@@ -164,7 +164,7 @@ extern "C" {
  * Return: The expression ``!!_x`` is evaluated and returned.
  */
 #define _c_unlikely_(_x) _c_internal_unlikely_(_x)
-#ifdef C_COMPILER_GNUC
+#if defined(C_COMPILER_GNUC)
 #  define _c_internal_unlikely_(_x) (__builtin_expect(!!(_x), 0))
 #else
 #  define _c_internal_unlikely_(_x) (!!(_x))
