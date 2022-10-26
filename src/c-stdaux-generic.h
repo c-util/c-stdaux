@@ -123,15 +123,18 @@ extern "C" {
  *
  * Mark a symbol definition as public, to be exported by the linker. On
  * GNUC-compatible systems, this is an alias for
- * ``__attribute__((__visibility__("default")))``. On MSVC compatible targets
- * this evaluates to ``__declspec(dllexport)``. On all other systems, this is a
- * no-op.
+ * ``__attribute__((__visibility__("default")))``. On all other systems, this
+ * is a no-op.
+ *
+ * Note that this explicitly does not resolve to ``__declspec(dllexport)`` on
+ * MSVC targets, since that would require knowing whether to compile for export
+ * or inport and whether to compile for static or dynamic linking. Instead,
+ * the ``_c_public_`` attribute is meant to be used unconditionally on
+ * definition only. For MSVC exports, we recommend module definition files.
  */
 #define _c_public_ _c_internal_public_
 #if defined(C_COMPILER_GNUC)
 #  define _c_internal_public_ __attribute__((__visibility__("default")))
-#elif defined(C_COMPILER_MSVC)
-#  define _c_internal_public_ __declspec(dllexport)
 #else
 #  define _c_internal_public_
 #endif
