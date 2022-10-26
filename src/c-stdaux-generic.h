@@ -119,6 +119,24 @@ extern "C" {
 #endif
 
 /**
+ * _c_public_() - Public attribute
+ *
+ * Mark a symbol definition as public, to be exported by the linker. On
+ * GNUC-compatible systems, this is an alias for
+ * ``__attribute__((__visibility__("default")))``. On MSVC compatible targets
+ * this evaluates to ``__declspec(dllexport)``. On all other systems, this is a
+ * no-op.
+ */
+#define _c_public_ _c_internal_public_
+#if defined(C_COMPILER_GNUC)
+#  define _c_internal_public_ __attribute__((__visibility__("default")))
+#elif defined(C_COMPILER_MSVC)
+#  define _c_internal_public_ __declspec(dllexport)
+#else
+#  define _c_internal_public_
+#endif
+
+/**
  * _c_unlikely_() - Unlikely attribute
  * @_x:                 Expression to evaluate
  *

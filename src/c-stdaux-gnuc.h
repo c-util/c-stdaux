@@ -83,13 +83,6 @@ extern "C" {
 #define _c_printf_(_a, _b) __attribute__((__format__(printf, _a, _b)))
 
 /**
- * _c_public_() - Public attribute
- *
- * Alias for ``__attribute__((__visibility__("default")))``.
- */
-#define _c_public_ __attribute__((__visibility__("default")))
-
-/**
  * _c_pure_() - Pure attribute
  *
  * Alias for ``__attribute__((__pure__))``.

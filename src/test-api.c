@@ -11,6 +11,9 @@
 
 #if defined(C_MODULE_GENERIC)
 
+_c_public_ int c_internal_public_fn(void);
+_c_public_ int c_internal_public_fn(void) { return 0; }
+
 static void cleanup_fn(int p) { (void)p; }
 static void direct_cleanup_fn(int p) { (void)p; }
 C_DEFINE_CLEANUP(int, cleanup_fn);
@@ -46,6 +49,11 @@ static void test_api_generic(void) {
         /* _c_likely_ */
         {
                 c_assert(_c_likely_(true));
+        }
+
+        /* _c_public_ */
+        {
+                c_assert(!c_internal_public_fn());
         }
 
         /* _c_unlikely_ */
@@ -126,8 +134,6 @@ static _c_deprecated_ _c_unused_ int deprecated_fn(void) { return 0; }
 _c_hidden_ int c_internal_hidden_fn(void);
 _c_hidden_ int c_internal_hidden_fn(void) { return 0; }
 static _c_printf_(1, 2) int printf_fn(const _c_unused_ char *f, ...) { return 0; }
-_c_public_ int c_internal_public_fn(void);
-_c_public_ int c_internal_public_fn(void) { return 0; }
 static _c_pure_ int pure_fn(void) { return 0; }
 static _c_sentinel_ int sentinel_fn(const _c_unused_ char *f, ...) { return 0; }
 static _c_unused_ int unused_fn(void) { return 0; }
@@ -171,11 +177,6 @@ static void test_api_gnuc(void) {
         /* _c_printf_ */
         {
                 c_assert(!printf_fn("%d", 1));
-        }
-
-        /* _c_public_ */
-        {
-                c_assert(!c_internal_public_fn());
         }
 
         /* _c_pure_ */
