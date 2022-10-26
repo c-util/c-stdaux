@@ -31,13 +31,6 @@ extern "C" {
 /**/
 
 /**
- * _c_always_inline_() - Always-inline attribute
- *
- * Alias for ``__attribute__((__always_inline__))``.
- */
-#define _c_always_inline_ __attribute__((__always_inline__))
-
-/**
  * _c_cleanup_() - Cleanup attribute
  * @_x:                 Cleanup function to use
  *

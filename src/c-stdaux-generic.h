@@ -104,6 +104,22 @@ extern "C" {
 /**/
 
 /**
+ * _c_always_inline_() - Always-inline attribute
+ *
+ * Annotate a symbol to be inlined more aggressively. On GNUC targets this is
+ * an alias for ``__attribute__((__always_inline__))``. On MSVC targets this is
+ * and alias for ``__forceinline``. On other systems, this is a no-op.
+ */
+#define _c_always_inline_ _c_internal_always_inline_
+#if defined(C_COMPILER_GNUC)
+#  define _c_internal_always_inline_ __attribute__((__always_inline__))
+#elif defined(C_COMPILER_MSVC)
+#  define _c_internal_always_inline_ __forceinline
+#else
+#  define _c_internal_always_inline_
+#endif
+
+/**
  * _c_likely_() - Likely attribute
  * @_x:                 Expression to evaluate
  *
