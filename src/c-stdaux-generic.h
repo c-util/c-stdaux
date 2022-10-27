@@ -242,7 +242,7 @@ extern "C" {
 #define C_VAR2(_x, _uniq) C_CONCATENATE(c_internal_var_unique_, C_CONCATENATE(_uniq, _x))
 
 /**
- * DOC: Standard Library Utilities
+ * DOC: Generic Standard Library Utilities
  *
  * The C Standard Library lacks some crucial and basic support functions. This
  * section describes the set of helpers provided as extension to the standard
@@ -362,7 +362,7 @@ static inline int c_memcmp(const void *s1, const void *s2, size_t n) {
 }
 
 /**
- * DOC: Common Destructors
+ * DOC: Generic Destructors
  *
  * A set of destructors is provided which extends standard library destructors
  * to adhere to some adjuvant rules. In particular, they return an invalid
@@ -408,7 +408,7 @@ static inline FILE *c_fclose(FILE *f) {
 }
 
 /**
- * DOC: Common Cleanup Helpers
+ * DOC: Generic Cleanup Helpers
  *
  * A set of helpers that aid in creating functions suitable for use with
  * :c:macro:`_c_cleanup_()`. Furthermore, a collection of predefined cleanup
