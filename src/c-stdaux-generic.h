@@ -164,9 +164,9 @@ extern "C" {
  */
 #define _c_likely_(_x) _c_internal_likely_(_x)
 #if defined(C_COMPILER_GNUC)
-#  define _c_internal_likely_(_x) (__builtin_expect(!!(_x), 1))
+#  define _c_internal_likely_(_x) (__builtin_expect(_c_boolean_expr_(_x), 1))
 #else
-#  define _c_internal_likely_(_x) (!!(_x))
+#  define _c_internal_likely_(_x) (_c_boolean_expr_(_x))
 #endif
 
 /**
@@ -200,9 +200,9 @@ extern "C" {
  */
 #define _c_unlikely_(_x) _c_internal_unlikely_(_x)
 #if defined(C_COMPILER_GNUC)
-#  define _c_internal_unlikely_(_x) (__builtin_expect(!!(_x), 0))
+#  define _c_internal_unlikely_(_x) (__builtin_expect(_c_boolean_expr_(_x), 0))
 #else
-#  define _c_internal_unlikely_(_x) (!!(_x))
+#  define _c_internal_unlikely_(_x) (_c_boolean_expr_(_x))
 #endif
 
 /**
