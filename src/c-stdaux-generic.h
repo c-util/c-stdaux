@@ -264,7 +264,7 @@ extern "C" {
  * optimize it away.
  */
 #define c_assert(_x) (                                                          \
-                (bool)(_x)                                                      \
+                _c_likely_(_x)                                                  \
                         ? assert(true && #_x)                                   \
                         : assert(false && #_x)                                  \
         )
