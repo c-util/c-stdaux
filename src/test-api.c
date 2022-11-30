@@ -46,6 +46,11 @@ static void test_api_generic(void) {
 #endif
         }
 
+        /* _c_boolean_expr_ */
+        {
+                c_assert(_c_boolean_expr_(true));
+        }
+
         /* _c_likely_ */
         {
                 c_assert(_c_likely_(true));
