@@ -13,6 +13,24 @@
 
 static void test_basic_generic(void) {
         /*
+         * Verify `_c_boolean_expr_` evaluates expressions to a boolean value
+         * and correctly works on all platforms.
+         */
+        {
+                int v = 0;
+
+                c_assert(_c_boolean_expr_(0) == 0);
+                c_assert(_c_boolean_expr_(1) == 1);
+                c_assert(_c_boolean_expr_(2) == 1);
+                c_assert(_c_boolean_expr_(INT_MIN) == 1);
+                c_assert(_c_boolean_expr_(INT_MAX) == 1);
+
+                /* verify no double-evaluation takes place */
+                c_assert(_c_boolean_expr_(v++) == 0);
+                c_assert(_c_boolean_expr_(v) == 1);
+        }
+
+        /*
          * Test stringify/concatenation helpers. Also make sure to test that
          * the passed arguments are evaluated first, before they're stringified
          * and/or concatenated.
