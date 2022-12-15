@@ -25,7 +25,7 @@ static int check_cassert_unreachable(int switch_val) {
     return result;
 }
 
-static void test_basic_generic(void) {
+static void test_basic_generic(int non_constant_expr) {
         /*
          * Verify `_c_boolean_expr_` evaluates expressions to a boolean value
          * and correctly works on all platforms.
@@ -42,6 +42,24 @@ static void test_basic_generic(void) {
                 /* verify no double-evaluation takes place */
                 c_assert(_c_boolean_expr_(v++) == 0);
                 c_assert(_c_boolean_expr_(v) == 1);
+
+#if defined(C_COMPILER_GNUC)
+                c_assert(__builtin_constant_p(_c_boolean_expr_(1)));
+                c_assert(!__builtin_constant_p(_c_boolean_expr_(non_constant_expr)));
+#endif
+        }
+
+        /*
+         * Test that _c_likely_() and _c_unlikely_() can deal with constant
+         * expressions.
+         */
+        {
+#if defined(C_COMPILER_GNUC)
+                c_assert(__builtin_constant_p(_c_likely_(1)));
+                c_assert(__builtin_constant_p(_c_unlikely_(1)));
+                c_assert(!__builtin_constant_p(_c_likely_(non_constant_expr)));
+                c_assert(!__builtin_constant_p(_c_unlikely_(non_constant_expr)));
+#endif
         }
 
         /*
@@ -216,6 +234,14 @@ static void test_basic_generic(void) {
                 c_assert(++v2);
                 if (v2 != 1)
                         abort();
+
+                /*
+                 * Use the `check_cassert_unreachable()` helper to verify the
+                 * compiler does not complain about unreachable code when
+                 * `c_assert(0)` is used.
+                 */
+                c_assert(check_cassert_unreachable(1) == 1);
+                c_assert(check_cassert_unreachable(2) == 2);
         }
 
         /*
@@ -295,29 +321,12 @@ static void test_basic_generic(void) {
                 c_assert(c_memcmp(&v1, &v2, 0) == 0);
                 c_assert(c_memcmp(&v1, &v2, 8) != 0);
         }
-
-        /*
-         * Test that _c_likely_(), _c_unlikely_(), _c_boolean_expr_() result in constant
-         * expressions for constant arguments. This also means that c_assert(0) is seen
-         * by the compiler as unreachable code (unless built with NDEBUG) and avoid
-         * "-Wsometimes-uninitialized" warnings in the following code.
-         */
-        {
-                c_assert(check_cassert_unreachable(1) == 1);
-#if defined(C_COMPILER_GNUC)
-                c_assert(__builtin_constant_p(_c_likely_(1)));
-                c_assert(__builtin_constant_p(_c_unlikely_(1)));
-                c_assert(__builtin_constant_p(_c_boolean_expr_(1)));
-                c_assert(!__builtin_constant_p(_c_likely_(check_cassert_unreachable(1) == 1)));
-                c_assert(!__builtin_constant_p(_c_unlikely_(check_cassert_unreachable(2) == 2)));
-                c_assert(!__builtin_constant_p(_c_boolean_expr_(check_cassert_unreachable(2) == 2)));
-#endif
-        }
 }
 
 #else /* C_MODULE_GENERIC */
 
-static void test_basic_generic(void) {
+static void test_basic_generic(int non_constant_expr) {
+        (void)non_constant_expr;
 }
 
 #endif /* C_MODULE_GENERIC */
@@ -581,7 +590,7 @@ static void test_basic_unix(void) {
 
 int main(int argc, char **argv) {
         (void)argv;
-        test_basic_generic();
+        test_basic_generic(argc);
         test_basic_gnuc(argc);
         test_basic_unix();
         return 0;
