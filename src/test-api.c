@@ -98,6 +98,13 @@ static void test_api_generic(void) {
                 int C_VAR = 0; c_assert(!C_VAR); /* must be on the same line */
         }
 
+        /* c_assume_aligned */
+        {
+                _Alignas(16) uint8_t data[8] = { 0 };
+
+                c_assert(c_assume_aligned(data, 16, 0));
+        }
+
         /* c_assert */
         {
                 c_assert(true);

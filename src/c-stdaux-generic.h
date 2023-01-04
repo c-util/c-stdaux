@@ -290,6 +290,27 @@ extern "C" {
 /**/
 
 /**
+ * c_assume_aligned() - Hint alignment to compiler
+ * @_ptr:               Pointer to provide alignment hint for
+ * @_alignment:         Alignment in bytes
+ * @_offset:            Misalignment offset
+ *
+ * This hints to the compiler that `_ptr - _offset` is aligned to the alignment
+ * specified in `_alignment`.
+ *
+ * On platforms without support for `__builtin_assume_aligned()` this is a
+ * no-op.
+ *
+ * Return: `_ptr` is returned.
+ */
+#define c_assume_aligned(_ptr, _alignment, _offset) c_internal_assume_aligned((_ptr), (_alignment), (_offset))
+#if defined(C_COMPILER_GNUC)
+#  define c_internal_assume_aligned(_ptr, _alignment, _offset) __builtin_assume_aligned((_ptr), (_alignment), (_offset))
+#else
+#  define c_internal_assume_aligned(_ptr, _alignment, _offset) ((_alignment), (_offset), (_ptr))
+#endif
+
+/**
  * c_assert() - Runtime assertions
  * @_x:                 Result of an expression
  *
