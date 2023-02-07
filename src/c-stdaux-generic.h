@@ -304,7 +304,7 @@ extern "C" {
  * Return: `_ptr` is returned.
  */
 #define c_assume_aligned(_ptr, _alignment, _offset) c_internal_assume_aligned((_ptr), (_alignment), (_offset))
-#if defined(C_COMPILER_GNUC)
+#if defined(C_COMPILER_GNUC) && (!defined(__clang__) || __clang_major__ > 3)
 #  define c_internal_assume_aligned(_ptr, _alignment, _offset) __builtin_assume_aligned((_ptr), (_alignment), (_offset))
 #else
 #  define c_internal_assume_aligned(_ptr, _alignment, _offset) ((_alignment), (_offset), (_ptr))
