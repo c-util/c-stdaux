@@ -307,7 +307,7 @@ extern "C" {
 #if (defined(C_COMPILER_GNUC) && __GNUC__ > 5) || (defined(C_COMPILER_CLANG) && __clang_major__ > 3)
 #  define c_internal_assume_aligned(_ptr, _alignment, _offset) __builtin_assume_aligned((_ptr), (_alignment), (_offset))
 #else
-#  define c_internal_assume_aligned(_ptr, _alignment, _offset) ((_alignment), (_offset), (_ptr))
+#  define c_internal_assume_aligned(_ptr, _alignment, _offset) ((void)(_alignment), (void)(_offset), (_ptr))
 #endif
 
 /**
