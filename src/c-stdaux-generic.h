@@ -81,7 +81,6 @@ extern "C" {
  */
 /**/
 
-#include <assert.h>
 #include <errno.h>
 #include <inttypes.h>
 #include <limits.h>
@@ -315,25 +314,6 @@ extern "C" {
 #else
 #  define c_internal_assume_aligned(_ptr, _alignment, _offset) ((void)(_alignment), (void)(_offset), (_ptr))
 #endif
-
-/**
- * c_assert() - Runtime assertions
- * @_x:                 Result of an expression
- *
- * This function behaves like the standard ``assert(3)`` macro. That is, if
- * ``NDEBUG`` is defined, it is a no-op. In all other cases it will assert that
- * the result of the passed expression is true.
- *
- * Unlike the standard ``assert(3)`` macro, this function always evaluates its
- * argument. This means side-effects will always be evaluated! However, if the
- * macro is used with constant expressions, the compiler will be able to
- * optimize it away.
- */
-#define c_assert(_x) (                                                          \
-                _c_likely_(_x)                                                  \
-                        ? assert(true && #_x)                                   \
-                        : assert(false && #_x)                                  \
-        )
 
 /**
  * c_errno() - Return valid errno
