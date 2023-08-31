@@ -129,6 +129,8 @@ extern "C" {
  *
  * Outside of macros, this has no added value.
  *
+ * This macro is async-signal-safe, provided that the condition is.
+ *
  * Return: Evaluates to the value of ``!!_x``.
  */
 #define _c_boolean_expr_(_x) _c_internal_boolean_expr_(__COUNTER__, _x)
@@ -163,6 +165,8 @@ extern "C" {
  * @_x:                 Expression to evaluate
  *
  * Alias for ``__builtin_expect(!!(_x), 1)``.
+ *
+ * This macro is async-signal-safe, provided that the condition is.
  *
  * Return: The expression ``!!_x`` is evaluated and returned.
  */
@@ -199,6 +203,8 @@ extern "C" {
  * @_x:                 Expression to evaluate
  *
  * Alias for ``__builtin_expect(!!(_x), 0)``.
+ *
+ * This macro is async-signal-safe, provided that the condition is.
  *
  * Return: The expression ``!!_x`` is evaluated and returned.
  */
