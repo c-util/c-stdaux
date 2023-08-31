@@ -50,6 +50,8 @@ extern "C" {
 #  include <c-stdaux-unix.h>
 #endif
 
+#include <c-stdaux-assert.h>
+
 #ifdef __cplusplus
 }
 #endif

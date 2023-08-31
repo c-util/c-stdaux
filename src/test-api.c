@@ -20,6 +20,8 @@ static void direct_cleanup_fn(int p) { (void)p; }
 C_DEFINE_CLEANUP(int, cleanup_fn);
 C_DEFINE_DIRECT_CLEANUP(int, direct_cleanup_fn);
 
+int global_int_0;
+
 static void test_api_generic(void) {
         /* C_COMPILER_* */
         {
@@ -155,6 +157,34 @@ static void test_api_generic(void) {
                 for (i = 0; i < sizeof(fns) / sizeof(*fns); ++i)
                         c_assert(!!fns[i]);
         }
+
+        if (false)
+                c_assert_not_reached();
+
+        switch (global_int_0) {
+        default:
+                /* Test that we don't get a -Wimplicit-fallthrough warning and
+                 * the compiler detect that the function doesn't return. */
+                c_assert_not_reached();
+        case 1:
+        case 0:
+                c_assert(global_int_0 == 0);
+                break;
+        }
+
+        {
+                int v;
+
+                v = 0;
+                c_assert((v = 1));
+                c_assert(v == 1);
+
+                v = 5;
+                c_more_assert_with(C_MORE_ASSERT_LEVEL - 1, (++v == -1));
+                c_more_assert_with(C_MORE_ASSERT_LEVEL, (++v == 6));
+                c_more_assert_with(C_MORE_ASSERT_LEVEL + 1, (++v == 7));
+                c_assert(v == 7);
+        }
 }
 
 #else /* C_MODULE_GENERIC */
@@ -279,6 +309,16 @@ static void test_api_gnuc(void) {
         /* c_align_to */
         {
                 c_assert(c_align_to(0, 0) == 0);
+        }
+
+        /* Check that assertions can be nested without compiler warnings. That easily
+         * happens when asserting on macros that contain expression statements and
+         * themselves assertions. */
+        {
+            c_assert(__extension__({ c_assert(true); true; }));
+            c_assert(__extension__({ c_more_assert(true); true; }));
+            c_more_assert(__extension__({ c_assert(true); true; }));
+            c_more_assert(__extension__({ c_more_assert(true); true; }));
         }
 }
 
