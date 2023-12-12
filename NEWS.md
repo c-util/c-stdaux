@@ -1,5 +1,18 @@
 # c-stdaux - Auxiliary macros and functions for the C standard library
 
+## CHANGES WITH 1.5.0:
+
+        * Change the meson variable exports to avoid dashes in variable names,
+          given that pkg-config seems to be unable to deal with them. The old
+          variables are still exported for compatibility, but new variables
+          without dashes are now provided as well.
+
+        * Improve warning-resiliency of `c_assume_aligned` on older compilers.
+
+        Contributions from: Adrian Vovk, David Rheinsberg, Thomas Haller
+
+        - Dußlingen, 2023-12-12
+
 ## CHANGES WITH 1.4.0:
 
         * New compiler-builtin c_assume_aligned() allows hinting alignment
