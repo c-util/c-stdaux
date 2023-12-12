@@ -26,15 +26,16 @@ exclude_patterns = []
 
 extensions = [
     'hawkmoth',
+    'hawkmoth.ext.transformations',
 ]
 
 # Hawkmoth Options
 
-cautodoc_clang = capidocs.kerneldoc.hawkmoth_include_args()
-cautodoc_clang += ["-I" + os.path.abspath("..")]
-cautodoc_clang += ["-DC_COMPILER_DOCS"]
+hawkmoth_clang = capidocs.kerneldoc.hawkmoth_include_args()
+hawkmoth_clang += ["-I" + os.path.abspath("..")]
+hawkmoth_clang += ["-DC_COMPILER_DOCS"]
 
-cautodoc_root = os.path.abspath('..')
+hawkmoth_root = os.path.abspath('..')
 
 cautodoc_transformations = {
     'kerneldoc': capidocs.kerneldoc.hawkmoth_converter,
