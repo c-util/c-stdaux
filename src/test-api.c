@@ -20,6 +20,8 @@ static void direct_cleanup_fn(int p) { (void)p; }
 C_DEFINE_CLEANUP(int, cleanup_fn);
 C_DEFINE_DIRECT_CLEANUP(int, direct_cleanup_fn);
 
+int global_int_0;
+
 static void test_api_generic(void) {
         /* C_COMPILER_* */
         {
@@ -154,6 +156,41 @@ static void test_api_generic(void) {
 
                 for (i = 0; i < sizeof(fns) / sizeof(*fns); ++i)
                         c_assert(!!fns[i]);
+        }
+
+        if (false)
+                c_assert_not_reached();
+
+        switch (global_int_0) {
+        default:
+                /* Test that we don't get a -Wimplicit-fallthrough warning and
+                 * the compiler detect that the function doesn't return. */
+                c_assert_not_reached();
+        case 1:
+        case 0:
+                c_assert(global_int_0 == 0);
+                break;
+        }
+
+        {
+                int v;
+                int assert_level;
+
+                v = 0;
+                c_assert((v = 1));
+                c_assert(v == 1);
+
+                /* depending on the assert_level, the condition is evaluate
+                 * or not ("nse" == no-side-effect). */
+                for (assert_level = 0; assert_level < 10; assert_level++) {
+                        v = 5;
+                        c_assert_nse_on(assert_level, (v = 6));
+                        if (assert_level < C_MORE_ASSERTS_LEVEL) {
+                            c_assert(v == 5);
+                        } else {
+                            c_assert(v == 6);
+                        }
+                }
         }
 }
 
