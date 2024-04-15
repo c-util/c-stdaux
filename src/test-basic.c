@@ -503,7 +503,7 @@ static void test_basic_gnuc(int non_constant_expr) {
                 c_assert(foo == 11);
 
                 c_assert(__builtin_constant_p(c_div_round_up(1, 5)));
-                c_assert(!__builtin_constant_p(c_div_round_up(1, non_constant_expr)));
+                c_assert(!__builtin_constant_p(c_div_round_up(8, 1 + !non_constant_expr)));
 
                 /* alternative calculation is [(x + y - 1) / y], but it may overflow */
                 for (i = 0; i <= 0xffff; ++i) {
