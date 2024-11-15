@@ -20,6 +20,7 @@ libcstdaux_dep = declare_dependency(
 if not meson.is_subproject()
         install_headers(
                 'c-stdaux.h',
+                'c-stdaux-assert.h',
                 'c-stdaux-generic.h',
                 'c-stdaux-gnuc.h',
                 'c-stdaux-unix.h',
