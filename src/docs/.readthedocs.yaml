@@ -5,7 +5,7 @@ version: 2
 build:
   apt_packages:
   - "clang"
-  os: "ubuntu-22.04"
+  os: "ubuntu-lts-latest"
   tools:
     python: "3"
 
@@ -14,7 +14,6 @@ formats: "all"
 python:
   install:
   - requirements: "src/docs/requirements.txt"
-  system_packages: true
 
 sphinx:
   configuration: "src/docs/conf.py"
