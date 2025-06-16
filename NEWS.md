@@ -1,5 +1,14 @@
 # c-stdaux - Auxiliary macros and functions for the C standard library
 
+## CHANGES WITH 1.6.0:
+
+        * Multiple fixes to the test-suite, which fix differences in the
+          optimizations performed by GCC and clang.
+
+        Contributions from: David Rheinsberg, ms178, Nikita Popov
+
+        - Dußlingen, 2025-06-16
+
 ## CHANGES WITH 1.5.0:
 
         * Change the meson variable exports to avoid dashes in variable names,
