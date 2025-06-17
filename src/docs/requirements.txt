@@ -1,3 +1,4 @@
 c-apidocs>=1.0.0
 clang>=6
 hawkmoth>=0.20
+sphinx-rtd-theme>=3.0.0
