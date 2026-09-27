@@ -14,12 +14,10 @@
 static int check_cassert_unreachable(int switch_val) {
     int result;
 
-    /* Check whether this triggers a "-Wsometimes-uninitialized" warning or
-     * whether the compiler recognizes c_assert(0) as unreachable code. */
     switch (switch_val) {
     case 1: result = 1; break;
     case 2: result = 2; break;
-    default: c_assert(0);
+    default: c_assert(0); result = 0; /* unreachable, but avoid compiler warning */
     }
 
     return result;
